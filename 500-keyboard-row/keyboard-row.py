@@ -5,13 +5,10 @@ class Solution:
         str3=set("zxcvbnm")
         result=[]
         for word in words:
-            new_word=word.lower()
-            if all( char in str1 for char in new_word):
+            new_word=set(word.lower())
+            if new_word<=str1 or new_word<=str2 or new_word<=str3:
                 result.append(word)
-            if all( char in str2 for char in new_word):
-                result.append(word)
-            if all( char in str3 for char in new_word):
-                result.append(word)
+            
         return result
 
         
