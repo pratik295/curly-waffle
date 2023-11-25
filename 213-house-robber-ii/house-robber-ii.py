@@ -2,32 +2,34 @@ from typing import List
 
 class Solution:
     def rob(self, houses: List[int]) -> int:
-        def solve(start, end, memo):
-            if start > end:
+        def rob_linear(nums):
+            dp = [-1] * len(nums)
+            return rob_recursive(len(nums) - 1, nums, dp)
+
+        def rob_recursive(i, nums, dp):
+            if i < 0:
                 return 0
-            if start == end:
-                return houses[start]
+            if dp[i] != -1:
+                return dp[i]
 
-            if (start, end) in memo:
-                return memo[(start, end)]
-
-            rob_current = houses[start] + solve(start + 2, end, memo)
-            skip_current = solve(start + 1, end, memo)
-
-            result = max(rob_current, skip_current)
-            memo[(start, end)] = result
-
-            return result
+            rob_current = nums[i] + rob_recursive(i - 2, nums, dp)
+            skip_current = rob_recursive(i - 1, nums, dp)
+            dp[i] = max(rob_current, skip_current)
+            return dp[i]
 
         if not houses:
             return 0
         if len(houses) == 1:
             return houses[0]
+        if len(houses) == 2:
+            return max(houses[0], houses[1])
 
-        memo = {}
-        case1 = solve(0, len(houses) - 2, memo)
-        memo = {}
-        case2 = solve(1, len(houses) - 1, memo)
+        # Case 1: Include the first house, exclude the last one
+        case1 = rob_linear(houses[:-1])
 
+        # Case 2: Exclude the first house, include the last one
+        case2 = rob_linear(houses[1:])
+
+        # Take the maximum of the two cases
         return max(case1, case2)
 
